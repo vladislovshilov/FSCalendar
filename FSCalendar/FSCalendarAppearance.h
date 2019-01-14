@@ -205,6 +205,9 @@ typedef NS_OPTIONS(NSUInteger, FSCalendarCaseOptions) {
  *
  */
 @property (assign, nonatomic) FSCalendarSeparators separators;
+@property (assign, nonatomic) CGFloat rightSeparatorInset;
+@property (assign, nonatomic) CGFloat leftSeparatorInset;
+@property (strong, nonatomic) UIColor *separatorColor;
 
 #if TARGET_INTERFACE_BUILDER
 

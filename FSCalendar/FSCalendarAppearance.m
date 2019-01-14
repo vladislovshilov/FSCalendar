@@ -29,6 +29,8 @@
 {
     self = [super init];
     if (self) {
+        _rightSeparatorInset = -1;
+        _leftSeparatorInset = -1;
         
         _titleFont = [UIFont systemFontOfSize:FSCalendarStandardTitleTextSize];
         _subtitleFont = [UIFont systemFontOfSize:FSCalendarStandardSubtitleTextSize];

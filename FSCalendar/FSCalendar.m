@@ -145,7 +145,7 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
 }
 
 - (void)initialize
-{   
+{
     _appearance = [[FSCalendarAppearance alloc] init];
     _appearance.calendar = self;
     
@@ -302,7 +302,7 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
         
         self.calendarHeaderView.frame = CGRectMake(0, 0, self.fs_width, headerHeight);
         self.calendarWeekdayView.frame = CGRectMake(0, self.calendarHeaderView.fs_bottom, self.contentView.fs_width, weekdayHeight);
-
+        
         _deliver.frame = CGRectMake(self.calendarHeaderView.fs_left, self.calendarHeaderView.fs_top, self.calendarHeaderView.fs_width, headerHeight+weekdayHeight);
         _deliver.hidden = self.calendarHeaderView.hidden;
         if (!self.floatingMode) {
@@ -738,7 +738,7 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
         [NSException raise:FSCalendarInvalidArgumentsExceptionName format:@"Do not use %@ as the cell reuse identifier.", identifier];
     }
     [self.collectionView registerClass:cellClass forCellWithReuseIdentifier:identifier];
-
+    
 }
 
 - (FSCalendarCell *)dequeueReusableCellWithIdentifier:(NSString *)identifier forDate:(NSDate *)date atMonthPosition:(FSCalendarMonthPosition)position;
@@ -1055,7 +1055,7 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
 - (void)selectDate:(NSDate *)date scrollToDate:(BOOL)scrollToDate atMonthPosition:(FSCalendarMonthPosition)monthPosition
 {
     if (!self.allowsSelection || !date) return;
-        
+    
     [self requestBoundingDatesIfNecessary];
     
     FSCalendarAssertDateInBounds(date,self.gregorian,self.minimumDate,self.maximumDate);
@@ -1337,20 +1337,20 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
 - (void)invalidateAppearanceForCell:(FSCalendarCell *)cell forDate:(NSDate *)date
 {
 #define FSCalendarInvalidateCellAppearance(SEL1,SEL2) \
-    cell.SEL1 = [self.delegateProxy calendar:self appearance:self.appearance SEL2:date];
+cell.SEL1 = [self.delegateProxy calendar:self appearance:self.appearance SEL2:date];
     
 #define FSCalendarInvalidateCellAppearanceWithDefault(SEL1,SEL2,DEFAULT) \
-    if ([self.delegateProxy respondsToSelector:@selector(calendar:appearance:SEL2:)]) { \
-        cell.SEL1 = [self.delegateProxy calendar:self appearance:self.appearance SEL2:date]; \
-    } else { \
-        cell.SEL1 = DEFAULT; \
-    }
+if ([self.delegateProxy respondsToSelector:@selector(calendar:appearance:SEL2:)]) { \
+cell.SEL1 = [self.delegateProxy calendar:self appearance:self.appearance SEL2:date]; \
+} else { \
+cell.SEL1 = DEFAULT; \
+}
     
     FSCalendarInvalidateCellAppearance(preferredFillDefaultColor,fillDefaultColorForDate);
     FSCalendarInvalidateCellAppearance(preferredFillSelectionColor,fillSelectionColorForDate);
     FSCalendarInvalidateCellAppearance(preferredTitleDefaultColor,titleDefaultColorForDate);
     FSCalendarInvalidateCellAppearance(preferredTitleSelectionColor,titleSelectionColorForDate);
-
+    
     FSCalendarInvalidateCellAppearanceWithDefault(preferredTitleOffset,titleOffsetForDate,CGPointInfinity);
     if (cell.subtitle) {
         FSCalendarInvalidateCellAppearance(preferredSubtitleDefaultColor,subtitleDefaultColorForDate);
@@ -1365,7 +1365,7 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
     FSCalendarInvalidateCellAppearance(preferredBorderDefaultColor,borderDefaultColorForDate);
     FSCalendarInvalidateCellAppearance(preferredBorderSelectionColor,borderSelectionColorForDate);
     FSCalendarInvalidateCellAppearanceWithDefault(preferredBorderRadius,borderRadiusForDate,-1);
-
+    
     if (cell.image) {
         FSCalendarInvalidateCellAppearanceWithDefault(preferredImageOffset,imageOffsetForDate,CGPointInfinity);
     }
@@ -1440,7 +1440,7 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
         default:
             break;
     }
-   
+    
 }
 
 - (void)selectCounterpartDate:(NSDate *)date
@@ -1457,7 +1457,7 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
     }
     if (cell) {
         cell.selected = YES;
-        if (self.collectionView.allowsMultipleSelection) {   
+        if (self.collectionView.allowsMultipleSelection) {
             [self.collectionView selectItemAtIndexPath:[self.collectionView indexPathForCell:cell] animated:NO scrollPosition:UICollectionViewScrollPositionNone];
         }
     }

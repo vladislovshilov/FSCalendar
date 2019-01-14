@@ -63,7 +63,8 @@ NS_ASSUME_NONNULL_END
     
     [self.calendar addObserver:self forKeyPath:@"scope" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:_KVOContext];
     self.calendar.placeholderType = FSCalendarPlaceholderTypeNone;
-    self.calendar.scope = FSCalendarScopeWeek;
+    self.calendar.scrollDirection = FSCalendarScrollDirectionVertical;
+    self.calendar.scope = FSCalendarScopeMonth;
     
     // For UITest
     self.calendar.accessibilityIdentifier = @"calendar";

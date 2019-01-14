@@ -13,6 +13,7 @@
 #import "FSCalendarExtensions.h"
 #import "FSCalendarConstants.h"
 #import "FSCalendarSeparatorDecorationView.h"
+#import "SeparatorCollectionViewLayoutAttributes.h"
 
 #define kFSCalendarSeparatorInterRows @"FSCalendarSeparatorInterRows"
 #define kFSCalendarSeparatorInterColumns @"FSCalendarSeparatorInterColumns"
@@ -74,7 +75,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotifications:) name:UIDeviceOrientationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotifications:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
         
-        [self registerClass:FSCalendarSeparatorDecorationView.class forDecorationViewOfKind:kFSCalendarSeparatorInterRows];
+        [self registerClass: FSCalendarSeparatorDecorationView.class forDecorationViewOfKind:kFSCalendarSeparatorInterRows];
     }
     return self;
 }
@@ -101,7 +102,7 @@
         return;
     }
     self.collectionViewSize = self.collectionView.frame.size;
-    self.separators = self.calendar.appearance.separators;
+    self.separators = (self.calendar.appearance.rightSeparatorInset != -1 || self.calendar.appearance.leftSeparatorInset != -1) ? FSCalendarSeparatorInterRows : self.calendar.appearance.separators;
     
     [self.itemAttributes removeAllObjects];
     [self.headerAttributes removeAllObjects];
@@ -302,7 +303,10 @@
                         UICollectionViewLayoutAttributes *itemAttributes = [self layoutAttributesForItemAtIndexPath:indexPath];
                         [layoutAttributes addObject:itemAttributes];
                         
-                        UICollectionViewLayoutAttributes *rowSeparatorAttributes = [self layoutAttributesForDecorationViewOfKind:kFSCalendarSeparatorInterRows atIndexPath:indexPath];
+                        SeparatorCollectionViewLayoutAttributes *rowSeparatorAttributes = [SeparatorCollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kFSCalendarSeparatorInterRows withIndexPath:indexPath];
+                        rowSeparatorAttributes.separatorColor = self.calendar.appearance.separatorColor;
+                        UICollectionViewLayoutAttributes *t = [self layoutAttributesForDecorationViewOfKind:kFSCalendarSeparatorInterRows atIndexPath:indexPath];
+                        rowSeparatorAttributes.frame = t.frame;
                         if (rowSeparatorAttributes) {
                             [layoutAttributes addObject:rowSeparatorAttributes];
                         }
@@ -346,7 +350,10 @@
                         UICollectionViewLayoutAttributes *itemAttributes = [self layoutAttributesForItemAtIndexPath:indexPath];
                         [layoutAttributes addObject:itemAttributes];
                         
-                        UICollectionViewLayoutAttributes *rowSeparatorAttributes = [self layoutAttributesForDecorationViewOfKind:kFSCalendarSeparatorInterRows atIndexPath:indexPath];
+                        SeparatorCollectionViewLayoutAttributes *rowSeparatorAttributes = [SeparatorCollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kFSCalendarSeparatorInterRows withIndexPath:indexPath];
+                        rowSeparatorAttributes.separatorColor = self.calendar.appearance.separatorColor;
+                        UICollectionViewLayoutAttributes *t = [self layoutAttributesForDecorationViewOfKind:kFSCalendarSeparatorInterRows atIndexPath:indexPath];
+                        rowSeparatorAttributes.frame = t.frame;
                         if (rowSeparatorAttributes) {
                             [layoutAttributes addObject:rowSeparatorAttributes];
                         }
@@ -460,8 +467,7 @@
 }
 
 // Separators
-- (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath
-{
+- (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     if ([elementKind isEqualToString:kFSCalendarSeparatorInterRows] && (self.separators & FSCalendarSeparatorInterRows)) {
         UICollectionViewLayoutAttributes *attributes = self.rowSeparatorAttributes[indexPath];
         if (!attributes) {
@@ -470,7 +476,9 @@
                 return nil;
             }
             attributes = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kFSCalendarSeparatorInterRows withIndexPath:indexPath];
-            CGFloat x, y;
+            CGFloat x, y, width, height;
+            width = self.collectionView.fs_width;
+            height = FSCalendarStandardSeparatorThickness;
             if (!self.calendar.floatingMode) {
                 CGFloat rowOffset = [self calculateRowOffset:coordinate.row totalRows:[self.calendar.calculator numberOfRowsInSection:indexPath.section]] + self.heights[coordinate.row];
                 switch (self.scrollDirection) {
@@ -491,8 +499,12 @@
                 x = 0;
                 y = self.sectionTops[indexPath.section] + self.headerReferenceSize.height + self.tops[coordinate.row] + self.heights[coordinate.row];
             }
-            CGFloat width = self.collectionView.fs_width;
-            CGFloat height = FSCalendarStandardSeparatorThickness;
+            
+            if (self.calendar.appearance.leftSeparatorInset != 0 || self.calendar.appearance.rightSeparatorInset != 0) {
+                x = self.calendar.appearance.rightSeparatorInset;
+                width = width - self.calendar.appearance.rightSeparatorInset - self.calendar.appearance.leftSeparatorInset;
+            }
+            
             attributes.frame = CGRectMake(x, y, width, height);
             attributes.zIndex = NSIntegerMax;
             self.rowSeparatorAttributes[indexPath] = attributes;

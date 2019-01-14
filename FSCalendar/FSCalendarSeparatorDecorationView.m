@@ -8,11 +8,11 @@
 
 #import "FSCalendarSeparatorDecorationView.h"
 #import "FSCalendarConstants.h"
+#import "SeparatorCollectionViewLayoutAttributes.h"
 
 @implementation FSCalendarSeparatorDecorationView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = FSCalendarStandardSeparatorColor;
@@ -20,9 +20,13 @@
     return self;
 }
 
-- (void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes
-{
+- (void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     self.frame = layoutAttributes.frame;
+    
+    SeparatorCollectionViewLayoutAttributes *customLayoutAttributes = (SeparatorCollectionViewLayoutAttributes *)layoutAttributes;
+    self.backgroundColor = (UIColor *)customLayoutAttributes.separatorColor;
 }
 
 @end
+
+
